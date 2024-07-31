@@ -76,7 +76,7 @@ python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./
 
 ## Best generated image
 
-Here, I found the best image generated when using depth and surface normals informatio with conditioning scale of 1.0 and 0.5 respectively with LMSDiscreteScheduler.
+I found that the best image quality is achieved when using depth and surface normal information with a conditioning scale of 1.0 and 0.5, respectively, along with the LMSDiscreteScheduler.
 
 1. with 50 inference steps:
 inference time = 8.596s
@@ -93,7 +93,7 @@ python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./
 ```
 ![Alt text](./generated_images/2_depth_n_normal_10.png)
 
-I found with more inference steps, i.e., 50, model will try to generate the images with more texture but given the inferenece time. I would contest that for realworld using 10 inference steps will work more good as inference time is more than 60% lower and quality of image remains more or less same.
+I found that increasing the number of inference steps to 50 allows the model to generate images with more texture. However, given the increased inference time, I would argue that using 10 inference steps is more practical for real-world applications. This approach reduces inference time by over 60% while maintaining comparable image quality.
 
 Just to compare the other combination generated image are shown below(all with --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16).
 1. Depth and Canny
@@ -125,9 +125,9 @@ Inference Time:   3.156s
 
 
 ## Inference time
-I found the easist way to reduce the inference time is to use 16-bit floating point precision instead of 32-bit. The choice of schuduler is also quite curcial for inference time.
+I found that the easiest way to reduce inference time is by using 16-bit floating-point precision instead of 32-bit. Additionally, selecting the right scheduler is crucial for optimizing inference time.
 
-1. Impact of 16-bit vs 32-bit inference time (all images are generated using LMSDiscreteScheduler depth and normal surface information with conditioning scale of 1.0 and 0.5 respectively and 10 inference):
+1. Impact of 16-bit vs 32-bit inference time (all images are generated using LMSDiscreteScheduler on depth and normal surface information with conditioning scale of 1.0 and 0.5 respectively, and 10 inference steps):
 a. 32 bit
 Inference Time: 7.063s
 
@@ -163,7 +163,7 @@ e. HeunDiscreteScheduler: The Heun’s Method Scheduler applies Heun’s method,
 
 ## Some more important findings:
 
-1.  negative_prompt: We can also pass negative prompt to the stable diffusion, model will use the negative prompt embeddings to discrage certain feature as mentioned in the negative prompts. We can provide some very general nagative prompt such as "low res, worst quality, low quality". So, we don't have to give specific nagative prompts for each input and it does not affects the inferenec time as well.
+1.  Negative prompting: We can also use negative prompts with Stable Diffusion. The model utilizes the embeddings from these negative prompts to discourage certain features described by them. For example, general negative prompts like “low resolution,” “worst quality,” or “low quality” can be used. This approach eliminates the need to specify detailed negative prompts for each input and does not impact inference time.
 Without Negative Prompt:
 
  ![Alt text](./generated_images/2_depth_n_normal_10.png)
@@ -172,7 +172,7 @@ With Negative Prompt:
 
  ![Alt text](./generated_images/2_negative_prompt.png)
  
-3.  Is CPU initialized generator works well: When setting seed on CPU vs GPU using torch.generator function. The genearted image of CPU seed image have good structure such as more defined boundaries and all. I found this is mainly due to the fact that CPU and GPU have different Random Number Generators (RNGs) Implementation.
+3.  Image seeding: When setting a seed using the torch.Generator function on a CPU versus a GPU, the images generated with a CPU seed have better structure, such as more defined boundaries. This difference is mainly due to the fact that CPUs and GPUs use different implementations of Random Number Generators (RNGs).
 With CPU seed:
 
  ![Alt text](./generated_images/2_depth_n_normal_10.png)
@@ -181,13 +181,13 @@ With CUDA seed:
 
  ![Alt text](./generated_images/2_cuda_seed.png)
  
-5.  Token margin is good but for bigger images: Token merging can speed up Stable Diffusion pipelines by merging redundent tokens, But it work well with large size image generation is required.
-No toke marging:
+5.  Token merging: Token merging is beneficial for optimizing Stable Diffusion pipelines by reducing redundant tokens. However, it performs well only with larger image generation.
+No token merging:
 Inference Time: 30.540s
 
  ![Alt text](./generated_images/2_noc_no_to.png)
  
-with token:
+With token merging:
 Inference Time: 25.363s
 
  ![Alt text](./generated_images/2_noc_with_to.png)
