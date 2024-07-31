@@ -51,6 +51,12 @@ Arguments discription of main.py to generate the image
  ```
 python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./depth_images/2.png" --generated_img_pth "./generated_images/2_depth.png" --control_with_depth --num_inference_steps 10  --use_f16
 ```
+Depth map input for Control Net:
+
+![Alt text](./generated_images/2_depth_original.png)
+
+Generated Image
+
 ![Alt text](./generated_images/2_depth.png)
 
  To generate image using only canny edge information using LMSDiscreteScheduler and 16-bit floating point precision:
@@ -58,6 +64,12 @@ python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./
  ```
 python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./depth_images/2.png" --generated_img_pth "./generated_images/2_canny.png" --control_with_canny --num_inference_steps 10  --use_f16
 ```
+Edges input for Control Net:
+
+![Alt text](./generated_images/2_canny_original.png)
+
+Generated Image
+
 ![Alt text](./generated_images/2_canny.png)
 
  To generate image using only surface normals information using LMSDiscreteScheduler and 16-bit floating point precision:
@@ -65,6 +77,12 @@ python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./
  ```
 python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./depth_images/2.png" --generated_img_pth "./generated_images/2_normal.png" --control_with_normal --num_inference_steps 10  --use_f16
 ```
+Surface Normals input for Control Net:
+
+![Alt text](./generated_images/2_normal_original.png)
+
+Generated Image
+
 ![Alt text](./generated_images/2_normal.png)
 
  To generate image using only segement information using LMSDiscreteScheduler and 16-bit floating point precision:
