@@ -74,7 +74,7 @@ python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./
 ```
 ![Alt text](./generated_images/2_segment.png)
 
-##Best generated image
+## Best generated image
 
 Here, I found the best image generated when using depth and surface normals informatio with conditioning scale of 1.0 and 0.5 respectively with LMSDiscreteScheduler.
 
@@ -98,13 +98,15 @@ I found with more inference steps, i.e., 50, model will try to generate the imag
 Just to compare the other combination generated image are shown below(all with --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16).
 1. Depth and Canny
 ![Alt text](./generated_images/2_depth_n_canny_10.png)
-3. Depth and Segment
+2. Depth and Normal
 ![Alt text](./generated_images/2_depth_n_normal_10.png)
+3. Depth and Segment
+![Alt text](./generated_images/2_depth_n_segment_10.png)
 
 The study of impact of Various Scheduler (dinosier) and 16/32-but floating point precision are discussed in last section.
 
 
-##Generating images of different aspect ration
+## Generating images of different aspect ration
 For this purpose "./depth_images/2_nocrop.png" is used as mentioned in the assignment (all images are genrated using depth information and normal surface information with conditioning scale of 1.0 and 0.5 respectively and 10 inference steps LMSDiscreteScheduler)
 
 1. Generating image with original aspect ratio with 32-bit floating point precision:
@@ -120,34 +122,52 @@ Inference Time:   3.156s
 ![Alt text](./generated_images/2_nocrop_1r1_16_bit_out.png)
 
 
-
-##Inference time
+## Inference time
 I found the easist way to reduce the inference time is to use 16-bit floating point precision instead of 32-bit. The choice of schuduler is also quite curcial for inference time.
 
 1. Impact of 16-bit vs 32-bit inference time (all images are generated using LMSDiscreteScheduler depth and normal surface information with conditioning scale of 1.0 and 0.5 respectively and 10 inference):
 a. 32 bit
+Inference Time: 7.063s
+![Alt text](./generated_images/2_32bit_out.png)
 b. 16 bit
+Inference Time: 3.320s
+![Alt text](./generated_images/2_16bit_out.png)
 
-2. Impact of various schuduler on inference time and generation quality (all images are generated with depth and normal surface information with conditioning scale of 1.0 and 0.5 respectively):
 
-a. PNDMScheduler: The Pseudo Numerical Methods for Diffusion Models (PNDM) scheduler accelerates diffusion model sampling by integrating pseudo numerical techniques, which balance between stability and speed, enhancing image generation quality.
+3. Impact of various schuduler on inference time and generation quality (all images are generated with depth and normal surface information with conditioning scale of 1.0 and 0.5 respectively):
 
-b. DDIMScheduler: The Denoising Diffusion Implicit Models (DDIM) scheduler offers deterministic and efficient sampling with fewer steps by leveraging implicit noise prediction, allowing for smoother and faster image synthesis in diffusion models.
-
-c. DDPMScheduler: The Denoising Diffusion Probabilistic Models (DDPM) scheduler follows the traditional probabilistic framework of diffusion models, providing robust and stable sampling but typically requires more inference steps for high-quality outputs.
-
-d. LMSDiscreteScheduler: The Linear Multistep Scheduler (LMS) for discrete steps uses linear multistep methods to solve the reverse diffusion process, achieving high-quality image generation with fewer inference steps, making it well-suited for use with ControlNet and Stable Diffusion.
-
+a. PNDMScheduler: It accelerates diffusion model sampling by integrating pseudo numerical techniques, which balance between stability and speed, enhancing image generation quality.
+![Alt text](./generated_images/PNDM.png)
+b. DDIMScheduler: This scheduler offers deterministic and efficient sampling with fewer steps by leveraging implicit noise prediction, allowing for smoother and faster image synthesis in diffusion models.
+![Alt text](./generated_images/DDIM.png)
+c. DDPMScheduler: It follows the traditional probabilistic framework of diffusion models, providing robust and stable sampling but typically requires more inference steps for high-quality outputs.
+![Alt text](./generated_images/DDPM.png)
+d. LMSDiscreteScheduler: It uses linear multistep methods to solve the reverse diffusion process, achieving high-quality image generation with fewer inference steps, making it well-suited for use with ControlNet and Stable Diffusion.
+![Alt text](./generated_images/LMSD.png)
 e. HeunDiscreteScheduler: The Heun’s Method Scheduler applies Heun’s method, an improved Euler method, to the discrete diffusion process, offering enhanced accuracy and stability in image generation by correcting for potential errors at each step.
+![Alt text](./generated_images/HEUN.png)
 
-##Some more important findings:
-1.  sudden convergence phenomenon
-2.  partially breaking the connections between a ControlNet block and the Stable Diffusion model helps in faster convergence.
-3.  we need to do two forward passes:
-4.  negative_prompt: We can also pass negative prompt to the stable diffusion, model will use the negative prompt embeddings to discrage certain feature as mentioned in the negative prompts. We can provide some very general nagative prompt such as "low res, worst quality, low quality". So, we don't have to give specific nagative prompts for each input and it does not affects the inferenec time as well.
+## Some more important findings:
+
+1.  negative_prompt: We can also pass negative prompt to the stable diffusion, model will use the negative prompt embeddings to discrage certain feature as mentioned in the negative prompts. We can provide some very general nagative prompt such as "low res, worst quality, low quality". So, we don't have to give specific nagative prompts for each input and it does not affects the inferenec time as well.
+Without Negative Prompt:
+ ![Alt text](./generated_images/2_dn.png)
+With Negative Prompt:
  ![Alt text](./generated_images/2_negative_prompt.png)
-7.  Is CPU initialized generator works well?
-8.  Token margin is good but for bigger images
+3.  Is CPU initialized generator works well: When setting seed on CPU vs GPU using torch.generator function. The genearted image of CPU seed image have good structure such as more defined boundaries and all. I found this is mainly due to the fact that CPU and GPU have different Random Number Generators (RNGs) Implementation.
+With CPU seed:
+ ![Alt text](./generated_images/2_dn.png)
+With CUDA seed:
+ ![Alt text](./generated_images/2_cuda_seed.png)
+5.  Token margin is good but for bigger images: Token merging can speed up Stable Diffusion pipelines by merging redundent tokens, But it work well with large size image generation is required.
+No toke marging:
+Inference Time: 30.540s
+ ![Alt text](./generated_images/2_noc_no_to.png)
+with token:
+Inference Time: 25.363s
+ ![Alt text](./generated_images/2_noc_with_to.png)
+
+
 
 
 
