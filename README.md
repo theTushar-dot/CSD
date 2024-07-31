@@ -174,6 +174,7 @@ With Negative Prompt:
  ![Alt text](./generated_images/2_negative_prompt.png)
  
 2.  Image seeding: When setting a seed using the torch.Generator function on a CPU versus a GPU, the images generated with a CPU seed have better structure, such as more defined boundaries. This difference is mainly due to the fact that CPUs and GPUs use different implementations of Random Number Generators (RNGs).
+   
 With CPU seed:
 
  ![Alt text](./generated_images/2_depth_n_normal_10.png)
@@ -183,6 +184,7 @@ With CUDA seed:
  ![Alt text](./generated_images/2_cuda_seed.png)
  
 3.  Token merging: Token merging is beneficial for optimizing Stable Diffusion pipelines by reducing redundant tokens. However, it performs well only with larger image generation.
+   
 No token merging(below is the generated image of size 2048x2048):
 Inference Time: 30.540s
 
