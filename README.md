@@ -132,6 +132,7 @@ a. 32 bit
 Inference Time: 7.063s
 
 ![Alt text](./generated_images/2_32_bit_out.png)
+
 b. 16 bit
 Inference Time: 3.320s
 
