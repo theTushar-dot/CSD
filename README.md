@@ -21,7 +21,7 @@ This repository contains the solutions for Avataar AI assignment.
 - scikit-image: 0.24.0
 
 ## Usage
-Arguments discription to generate the image
+Arguments discription of main.py to generate the image
 
 	•	--seed: Sets the seed for random number generation to ensure reproducibility of results.
 	•	--use_cuda: If specified, the program will utilize GPU acceleration for computations.
@@ -33,7 +33,7 @@ Arguments discription to generate the image
 	•	--beta_end: The ending value of the beta parameter for the noise schedule in the diffusion process.
 	•	--control_guidance_start: The starting value for control guidance strength.
 	•	--control_guidance_end: The ending value for control guidance strength.
-	•	--controlnet_con_scale: Scale factors for control net contribution, allowing multiple values.
+	•	--controlnet_con_scale: Scale factors for control net contribution, allowing multiple values for multiple ControlNet inputs.
 	•	--guidance_scale: The scale of guidance used in the generation process to steer the output towards the prompt.
 	•	--scheduler: Specifies the type of scheduler to use for the generation process.
 	•	--input_img_pth: The file path of the input image to be used in the generation process.
@@ -43,3 +43,13 @@ Arguments discription to generate the image
 	•	--control_with_normals: If specified, the generation process will be controlled using surface normal information.
 	•	--control_with_segment: If specified, the generation process will be controlled using segmentation information.
 	•	--use_f16: If specified, the program will use 16-bit floating point precision for faster computation
+
+ To generate image using only depth information using LMSDiscreteScheduler and 16-bit floating point precision:
+
+ ```
+python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./depth_images/2.png" --generated_img_pth "./generated_images/2_depth.png" --control_with_depth --num_inference_steps 20  --use_f16
+```
+![Alt text](./generated_images/2_depth.png)
+
+
+ 
