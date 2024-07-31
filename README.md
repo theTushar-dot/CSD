@@ -140,7 +140,7 @@ Inference Time: 3.320s
 ![Alt text](./generated_images/2_16_bit_out.png)
 
 
-3. Impact of various schuduler on inference time and generation quality (all images are generated with depth and normal surface information with conditioning scale of 1.0 and 0.5 respectively):
+2. Impact of various schuduler on inference time and generation quality (all images are generated with depth and normal surface information with conditioning scale of 1.0 and 0.5 respectively):
 
 a. PNDMScheduler: It accelerates diffusion model sampling by integrating pseudo numerical techniques, which balance between stability and speed, enhancing image generation quality.
 
@@ -173,7 +173,7 @@ With Negative Prompt:
 
  ![Alt text](./generated_images/2_negative_prompt.png)
  
-3.  Image seeding: When setting a seed using the torch.Generator function on a CPU versus a GPU, the images generated with a CPU seed have better structure, such as more defined boundaries. This difference is mainly due to the fact that CPUs and GPUs use different implementations of Random Number Generators (RNGs).
+2.  Image seeding: When setting a seed using the torch.Generator function on a CPU versus a GPU, the images generated with a CPU seed have better structure, such as more defined boundaries. This difference is mainly due to the fact that CPUs and GPUs use different implementations of Random Number Generators (RNGs).
 With CPU seed:
 
  ![Alt text](./generated_images/2_depth_n_normal_10.png)
@@ -182,7 +182,7 @@ With CUDA seed:
 
  ![Alt text](./generated_images/2_cuda_seed.png)
  
-5.  Token merging: Token merging is beneficial for optimizing Stable Diffusion pipelines by reducing redundant tokens. However, it performs well only with larger image generation.
+3.  Token merging: Token merging is beneficial for optimizing Stable Diffusion pipelines by reducing redundant tokens. However, it performs well only with larger image generation.
 No token merging(below is the generated image of size 2048x2048):
 Inference Time: 30.540s
 
