@@ -130,11 +130,25 @@ b. 16 bit
 
 2. Impact of various schuduler on inference time and generation quality (all images are generated with depth and normal surface information with conditioning scale of 1.0 and 0.5 respectively):
 
-a. PNDMScheduler: 
-b. DDIMScheduler:
-c. DDPMScheduler:
-d. LMSDiscreteScheduler:
-e. HeunDiscreteScheduler:
+a. PNDMScheduler: The Pseudo Numerical Methods for Diffusion Models (PNDM) scheduler accelerates diffusion model sampling by integrating pseudo numerical techniques, which balance between stability and speed, enhancing image generation quality.
+
+b. DDIMScheduler: The Denoising Diffusion Implicit Models (DDIM) scheduler offers deterministic and efficient sampling with fewer steps by leveraging implicit noise prediction, allowing for smoother and faster image synthesis in diffusion models.
+
+c. DDPMScheduler: The Denoising Diffusion Probabilistic Models (DDPM) scheduler follows the traditional probabilistic framework of diffusion models, providing robust and stable sampling but typically requires more inference steps for high-quality outputs.
+
+d. LMSDiscreteScheduler: The Linear Multistep Scheduler (LMS) for discrete steps uses linear multistep methods to solve the reverse diffusion process, achieving high-quality image generation with fewer inference steps, making it well-suited for use with ControlNet and Stable Diffusion.
+
+e. HeunDiscreteScheduler: The Heun’s Method Scheduler applies Heun’s method, an improved Euler method, to the discrete diffusion process, offering enhanced accuracy and stability in image generation by correcting for potential errors at each step.
+
+##Some more important findings:
+1.  sudden convergence phenomenon
+2.  partially breaking the connections between a ControlNet block and the Stable Diffusion model helps in faster convergence.
+3.  we need to do two forward passes:
+4.  negative_prompt: We can also pass negative prompt to the stable diffusion, model will use the negative prompt embeddings to discrage certain feature as mentioned in the negative prompts. We can provide some very general nagative prompt such as "low res, worst quality, low quality". So, we don't have to give specific nagative prompts for each input and it does not affects the inferenec time as well.
+ ![Alt text](./generated_images/2_negative_prompt.png)
+7.  Is CPU initialized generator works well?
+8.  Token margin is good but for bigger images
+
 
 
 
