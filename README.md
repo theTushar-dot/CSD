@@ -166,7 +166,7 @@ e. HeunDiscreteScheduler: The Heun’s Method Scheduler applies Heun’s method,
 1.  negative_prompt: We can also pass negative prompt to the stable diffusion, model will use the negative prompt embeddings to discrage certain feature as mentioned in the negative prompts. We can provide some very general nagative prompt such as "low res, worst quality, low quality". So, we don't have to give specific nagative prompts for each input and it does not affects the inferenec time as well.
 Without Negative Prompt:
 
- ![Alt text](./generated_images/2_dn.png)
+ ![Alt text](./generated_images/2_depth_n_normal_10.png)
  
 With Negative Prompt:
 
@@ -175,7 +175,7 @@ With Negative Prompt:
 3.  Is CPU initialized generator works well: When setting seed on CPU vs GPU using torch.generator function. The genearted image of CPU seed image have good structure such as more defined boundaries and all. I found this is mainly due to the fact that CPU and GPU have different Random Number Generators (RNGs) Implementation.
 With CPU seed:
 
- ![Alt text](./generated_images/2_dn.png)
+ ![Alt text](./generated_images/2_depth_n_normal_10.png)
  
 With CUDA seed:
 
