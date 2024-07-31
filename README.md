@@ -1,1 +1,1 @@
-# CSD
+# ControlledStableDiffusion(CSD)
