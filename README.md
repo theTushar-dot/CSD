@@ -44,12 +44,35 @@ Arguments discription of main.py to generate the image
 	•	--control_with_segment: If specified, the generation process will be controlled using segmentation information.
 	•	--use_f16: If specified, the program will use 16-bit floating point precision for faster computation
 
+## General image generation using controlNet
+
  To generate image using only depth information using LMSDiscreteScheduler and 16-bit floating point precision:
 
  ```
 python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./depth_images/2.png" --generated_img_pth "./generated_images/2_depth.png" --control_with_depth --num_inference_steps 20  --use_f16
 ```
 ![Alt text](./generated_images/2_depth.png)
+
+ To generate image using only canny edge information using LMSDiscreteScheduler and 16-bit floating point precision:
+
+ ```
+python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./depth_images/2.png" --generated_img_pth "./generated_images/2_canny.png" --control_with_canny --num_inference_steps 20  --use_f16
+```
+![Alt text](./generated_images/2_canny.png)
+
+ To generate image using only surface normals information using LMSDiscreteScheduler and 16-bit floating point precision:
+
+ ```
+python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./depth_images/2.png" --generated_img_pth "./generated_images/2_normal.png" --control_with_normal --num_inference_steps 20  --use_f16
+```
+![Alt text](./generated_images/2_normal.png)
+
+ To generate image using only segement information using LMSDiscreteScheduler and 16-bit floating point precision:
+
+ ```
+python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./depth_images/2.png" --generated_img_pth "./generated_images/2_segment.png" --control_with_segment --num_inference_steps 20  --use_f16
+```
+![Alt text](./generated_images/2_segment.png)
 
 
  
