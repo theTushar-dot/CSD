@@ -131,11 +131,11 @@ I found the easist way to reduce the inference time is to use 16-bit floating po
 a. 32 bit
 Inference Time: 7.063s
 
-![Alt text](./generated_images/2_32bit_out.png)
+![Alt text](./generated_images/2_32_bit_out.png)
 b. 16 bit
 Inference Time: 3.320s
 
-![Alt text](./generated_images/2_16bit_out.png)
+![Alt text](./generated_images/2_16_bit_out.png)
 
 
 3. Impact of various schuduler on inference time and generation quality (all images are generated with depth and normal surface information with conditioning scale of 1.0 and 0.5 respectively):
