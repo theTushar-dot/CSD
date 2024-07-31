@@ -182,7 +182,7 @@ With CUDA seed:
  ![Alt text](./generated_images/2_cuda_seed.png)
  
 5.  Token merging: Token merging is beneficial for optimizing Stable Diffusion pipelines by reducing redundant tokens. However, it performs well only with larger image generation.
-No token merging:
+No token merging(below is the generated image of size 2048x2048):
 Inference Time: 30.540s
 
  ![Alt text](./generated_images/2_noc_no_to.png)
