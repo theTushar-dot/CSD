@@ -1,5 +1,7 @@
-from diffusers import StableDiffusionControlNetPipeline, ControlNetModel, PNDMScheduler, DDIMScheduler, LMSDiscreteScheduler, DDPMScheduler, HeunDiscreteScheduler
+from diffusers import StableDiffusionControlNetPipeline, ControlNetModel, PNDMScheduler, DDIMScheduler, LMSDiscreteScheduler, DDPMScheduler, HeunDiscreteScheduler, UniPCMultistepScheduler, EulerAncestralDiscreteScheduler
 from PIL import Image
+import PIL
+from transformers import pipeline
 import numpy as np
 import argparse
 import torch
@@ -36,12 +38,14 @@ def parse_args():
     parser.add_argument('--control_with_normals', action='store_true', help='If specified, the generation process will be controlled using surface normal information')
     parser.add_argument('--control_with_segment', action='store_true', help=' If specified, the generation process will be controlled using segmentation information')
     parser.add_argument('--use_f16', action='store_true', help='If specified, the program will use 16-bit floating point precision for faster computation')
+    parser.add_argument('--use_resizing', action='store_true', help='If specified, the ControlNet input images will be resized to 512x512')
+    parser.add_argument('--use_xFormers', action='store_true', help='If specified, model will use xFormers acceleration and token merging')
 
     args = parser.parse_args()
     return args
     
 
-def hey_u_generate_image(args):
+def generate_an_image(args):
 
     if args.use_f16:
         dtype_to_be_used =  torch.float16
@@ -80,7 +84,7 @@ def hey_u_generate_image(args):
     elif len(all_control_nets) == 1:
         controlnet = all_control_nets[0]
     else:
-        print('Error') #TODO throw an error
+        print('Error')
 
     pipeline = StableDiffusionControlNetPipeline.from_pretrained("runwayml/stable-diffusion-v1-5", controlnet=controlnet,  torch_dtype=dtype_to_be_used) 
 
@@ -96,11 +100,10 @@ def hey_u_generate_image(args):
     elif args.scheduler == "Heun":
         pipeline.scheduler = HeunDiscreteScheduler.from_config(pipeline.scheduler.config)
     else:
-        print('raise Error') #TODO
+        print('Please select a valid scheduler')
 
-    print(pipeline.scheduler.config)
-
-
+    if args.use_xFormers:
+        pipeline.enable_xformers_memory_efficient_attention()
 
     pipeline.enable_model_cpu_offload()
 
@@ -127,10 +130,7 @@ def hey_u_generate_image(args):
         print('loading image for segment...')
         image_for_controlnet = segment_depth_image(depth_arr)
         all_img_for_controlnet.append(image_for_controlnet)
-        image_for_controlnet.save('./out_main/2_segment_original.png')
-    time()
 
-    
 
     if len(all_img_for_controlnet) == 1:
         image_for_controlnet = all_img_for_controlnet[0]
@@ -138,41 +138,44 @@ def hey_u_generate_image(args):
         image_for_controlnet = all_img_for_controlnet
 
 
-    if args.height is None:
+    if isinstance(image_for_controlnet, list):
+        ori_height = image_for_controlnet[0].size[1]
+        ori_width = image_for_controlnet[0].size[0]
+    else:
+        ori_height = image_for_controlnet.size[1]
+        ori_width = image_for_controlnet.size[0]
+
+
+    is_img_good_to_go = 1000 > ori_height > 500 and 1000 > ori_width > 500
+
+    if not is_img_good_to_go and args.use_resizing:
+        print('Resizing Image...')
         if isinstance(image_for_controlnet, list):
-            args.height = image_for_controlnet[0].size[1]
-            args.width = image_for_controlnet[0].size[0]
+            image_for_controlnet = [i_img.resize((512, 512), resample=PIL.Image.Resampling.LANCZOS) for i_img in image_for_controlnet]
         else:
-            args.height = image_for_controlnet.size[1]
-            args.width = image_for_controlnet.size[0]
+            image_for_controlnet = image_for_controlnet.resize((512, 512), resample=PIL.Image.Resampling.LANCZOS)
+    else:
+        print('generating image with lower and extreme sizes')
 
     prompt =  args.prompt 
-    # generator = torch.manual_seed(12345)
-    generator = torch.Generator(device='cuda').manual_seed(12345)
+    generator = torch.manual_seed(args.seed)
 
     start_time = time.time()
-    generated_images = pipeline(prompt, height = args.height, width = args.width,  image = image_for_controlnet, num_inference_steps=args.num_inference_steps,  generator=generator, controlnet_conditioning_scale = args.controlnet_con_scale, guidance_scale = args.guidance_scale)
+    generated_images = pipeline(prompt, height = args.height, width = args.width,  image = image_for_controlnet, num_inference_steps=args.num_inference_steps,  generator=generator, controlnet_conditioning_scale = args.controlnet_con_scale, guidance_scale = args.guidance_scale, safety_checker=None)
     end_time = time.time()
     duration = end_time - start_time
 
     print(f"###Time taken for the task: {duration} seconds")   
+
     generated_image = generated_images.images[0]
+    if not is_img_good_to_go and args.use_resizing:
+        generated_image = generated_image.resize((ori_height, ori_width), resample=PIL.Image.Resampling.LANCZOS)
     generated_image.save(args.generated_img_pth)
 
 
-def get_ssim(ori_img_pth, gen_img_pth):
-    generated_image = cv2.imread(gen_img_pth, cv2.IMREAD_GRAYSCALE)
-    ground_truth_image = cv2.imread(ori_img_pth, cv2.IMREAD_GRAYSCALE)
-    height, width = ground_truth_image.shape[:2]
-    generated_image_resized = cv2.resize(generated_image, (width, height), interpolation=cv2.INTER_LINEAR)
-    ssim_value = ssim(generated_image_resized, ground_truth_image)
-
-    return ssim_value
     
 
 if __name__ == '__main__':
     args = parse_args()
     set_seed(args.seed)
-    generated_img = hey_u_generate_image(args)
-    ssim_score = get_ssim(args.input_img_pth, args.generated_img_pth)
-    print('SSIM Score::',ssim_score)
+    generated_img = generate_an_image(args)
