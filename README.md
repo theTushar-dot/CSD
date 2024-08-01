@@ -222,8 +222,71 @@ Inference Time: 25.363s
  ![Alt text](./generated_images/2_noc_with_to.png)
 
 
+#Other generated Images
+
+1. Taking lower resolution images:
+I found that model is having quite problem in generating images of low resolution such as 1.png, 3.png and 7.npy images and model can comfortably generate high quality images for resolution ranging from 500 to 100. So to tackle this challenge I explictly detect if input image is out of the mentioned range or not. If it is then I resize it to control net input image to 512x512 size and after generating the image,I will rsize it to it's original size. This method founds to bw quite simple and effective.
+
+a. Image "1.png":
+
+Inputs:
+
+![Alt text](./generated_images/1_input.png)
 
 
+Generated Images:
 
+
+b. Image "3.png":
+
+Inputs:
+
+![Alt text](./generated_images/3_input.png)
+
+
+Generated Images:
+
+
+c. Image "7.npy":
+
+Inputs:
+
+![Alt text](./generated_images/7_input.png)
+
+
+Generated Images:
+
+
+2. Handling images of high resolution:
+Image "4.png" have a size of 2668x2668. which is quite large and requires more compuation power. So, I tackled this problem in two ways, 1) By resizing image to 512x512 size then generate image and resize back to it's original size as mentioned above. 2) I have used xFormers with token merging.
+
+Input:
+
+![Alt text](./generated_images/4_input.png)
+
+Generated Images:
+
+4. Tackling floating point image data of Image 6.npy
+In Image 6.npy, the given array is 32-bit float point which could not be directly converted to the PIL image. So, I have normalized the array first then convert it to 8 bit intrger format.
+
+Inputs:
+
+![Alt text](./generated_images/7_input.png)
+
+
+Generated Images:
+
+
+4. Handling 3D depth image:
+Image "5.png" is a 3D depth image whereas all other images are one dimenional of conations the same information in all three dimensions.
+
+Inputs:
+
+![Alt text](./generated_images/5_input.png)
+
+Generated Images with fisrt dimnesion's information:
+
+
+Generated Images with all three dimnesion's information:
 
  
