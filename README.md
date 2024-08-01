@@ -533,5 +533,5 @@ With CUDA seed:
  ![Alt text](./generated_images/2_cuda_seed.png)
 
 
- # Thanks 
+ # End (Thanks) 
  
