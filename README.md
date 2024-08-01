@@ -300,6 +300,8 @@ e. HeunDiscreteScheduler: The Heun’s Method Scheduler applies Heun’s method,
 
 ![Alt text](./generated_images/HEUN_new.png)
 
+In my study, LMSDiscreteScheduler proved ideal for our generation task, as it delivers high-quality textured images even with just 10 inference steps. Its discrete approximation to the diffusion process ensures a stable and controlled generation path, preserving image structure and details. Although inference time is similar across most schedulers, the quality of generated images varies significantly. For instance, HeunDiscreteScheduler can produce good results with 50 inference steps, but the computational cost outweighs the quality benefits.
+
 
 ## Generating images of different aspect ration
 For this purpose "./depth_images/2_nocrop.png" is used as mentioned in the assignment (all images are generated using depth information and normal surface information with conditioning scale of 1.0 and 0.5 respectively and 10 inference steps LMSDiscreteScheduler)
