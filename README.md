@@ -183,9 +183,10 @@ Investigation into the factors that affect inference time, including hardware co
 ## 5. Generated Images and Challenges
 A showcase of all generated images, detailing the unique challenges encountered for each image and the solutions implemented to overcome these challenges.
 
-## General image generation using controlNet
+## 2. Impact on Image Generation Quality
+Examination of how different inputs to ControlNet and various scheduler algorithms affect the quality of the generated images. In this section all studies were carried out using Image "2.png".
 
- To generate image using only depth information using LMSDiscreteScheduler and 16-bit floating point precision:
+To generate image using only depth information using LMSDiscreteScheduler and 16-bit floating point precision:
 
  ```
 python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./depth_images/2.png" --generated_img_pth "./generated_images/2_depth.png" --control_with_depth --num_inference_steps 10  --use_f16
