@@ -7,7 +7,8 @@ This repository contains the solutions for Avataar.AI assignment.
 	.
 	├── depth_images                   # Folder containing the depth images used to control the generation process of stable diffusion   
 	├── generated_images               # Folder containing the generated images
-	├── main.py                        # File containing the code for the image generation pipeline
+	├── main.py                        # File containing code for the image generation pipeline
+	├── main_self.py                   # File containing code for denosing loop, implemented for self-learning
 	└── utils.py                       # File containing helper functions
 
 ## Environment Settings
