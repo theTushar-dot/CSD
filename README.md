@@ -171,8 +171,6 @@ if __name__ == '__main__':
 This walkthrough should give you a comprehensive understanding of the key sections of the code and how they work together to generate images using Stable Diffusion with ControlNet.
 
 
-## 2. Impact on Image Generation Quality
-Examination of how different inputs to ControlNet and various scheduler algorithms affect the quality of the generated images.
 
 ## 3. Aspect Ratio Analysis
 Analysis of methods to generate images with different aspect ratios and the corresponding impact on image quality.
@@ -225,7 +223,7 @@ Generated Image
 
 ![Alt text](./generated_images/2_normal.png)
 
- To generate image using only segement information using LMSDiscreteScheduler and 16-bit floating point precision:
+ To generate image using only segment information using LMSDiscreteScheduler and 16-bit floating point precision:
 
  ```
 python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./depth_images/2.png" --generated_img_pth "./generated_images/2_segment.png" --control_with_segment --num_inference_steps 10  --use_f16
@@ -238,6 +236,10 @@ Segment image input for Control Net:
 Generated Image
 
 ![Alt text](./generated_images/2_segment.png)
+
+I found that images generated from depth input are richer in texture compared to those from other inputs. However, they lack the solid boundaries around objects that are more defined in images generated using edges and surface normal information.
+
+When a high-threshold edge image is used, the generated output has finer structures, evident in the detailed quality of textures of carpet in second image. Using surface normal information enhances the clarity of boundaries between connected objects. Conversely, segmentation information yields the worst results, as it struggles to differentiate objects from a depth image.
 
 
 ## Best generated image
