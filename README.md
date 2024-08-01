@@ -277,9 +277,28 @@ For comparison, the images generated using other combinations are shown below (a
 
 ![Alt text](./generated_images/2_depth_n_canny_n_normal_10.png)
 
+### Impact of various schudulers on image generation quality
+Impact of various schudulers on inference time and generation quality (all images are generated with depth and normal surface information with conditioning scale of 1.0 and 0.5 respectively):
 
+a. PNDMScheduler: It accelerates diffusion model sampling by integrating pseudo numerical techniques, which balance between stability and speed, enhancing image generation quality.
 
-The study of impact of Various Scheduler (dinosier) and 16/32-but floating point precision are discussed in last section.
+![Alt text](./generated_images/PNDM.png)
+
+b. DDIMScheduler: This scheduler offers deterministic and efficient sampling with fewer steps by leveraging implicit noise prediction, allowing for smoother and faster image synthesis in diffusion models.
+
+![Alt text](./generated_images/DDIM.png)
+
+c. DDPMScheduler: It follows the traditional probabilistic framework of diffusion models, providing robust and stable sampling but typically requires more inference steps for high-quality outputs.
+
+![Alt text](./generated_images/DDPM.png)
+
+d. LMSDiscreteScheduler: It uses linear multistep methods to solve the reverse diffusion process, achieving high-quality image generation with fewer inference steps, making it well-suited for use with ControlNet and Stable Diffusion.
+
+![Alt text](./generated_images/LMSD.png)
+
+e. HeunDiscreteScheduler: The Heun’s Method Scheduler applies Heun’s method, an improved Euler method, to the discrete diffusion process, offering enhanced accuracy and stability in image generation by correcting for potential errors at each step.
+
+![Alt text](./generated_images/HEUN.png)
 
 
 ## Generating images of different aspect ration
@@ -313,28 +332,6 @@ Inference Time: 3.320s
 
 ![Alt text](./generated_images/2_16_bit_out.png)
 
-
-2. Impact of various schuduler on inference time and generation quality (all images are generated with depth and normal surface information with conditioning scale of 1.0 and 0.5 respectively):
-
-a. PNDMScheduler: It accelerates diffusion model sampling by integrating pseudo numerical techniques, which balance between stability and speed, enhancing image generation quality.
-
-![Alt text](./generated_images/PNDM.png)
-
-b. DDIMScheduler: This scheduler offers deterministic and efficient sampling with fewer steps by leveraging implicit noise prediction, allowing for smoother and faster image synthesis in diffusion models.
-
-![Alt text](./generated_images/DDIM.png)
-
-c. DDPMScheduler: It follows the traditional probabilistic framework of diffusion models, providing robust and stable sampling but typically requires more inference steps for high-quality outputs.
-
-![Alt text](./generated_images/DDPM.png)
-
-d. LMSDiscreteScheduler: It uses linear multistep methods to solve the reverse diffusion process, achieving high-quality image generation with fewer inference steps, making it well-suited for use with ControlNet and Stable Diffusion.
-
-![Alt text](./generated_images/LMSD.png)
-
-e. HeunDiscreteScheduler: The Heun’s Method Scheduler applies Heun’s method, an improved Euler method, to the discrete diffusion process, offering enhanced accuracy and stability in image generation by correcting for potential errors at each step.
-
-![Alt text](./generated_images/HEUN.png)
 
 ## Some more important findings:
 
