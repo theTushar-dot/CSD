@@ -172,8 +172,6 @@ This walkthrough should give you a comprehensive understanding of the key sectio
 
 
 
-## 3. Aspect Ratio Analysis
-Analysis of methods to generate images with different aspect ratios and the corresponding impact on image quality.
 
 ## 4. Inference Time Study
 Investigation into the factors that affect inference time, including hardware considerations and algorithmic complexity.
@@ -303,20 +301,27 @@ e. HeunDiscreteScheduler: The Heun’s Method Scheduler applies Heun’s method,
 In my study, LMSDiscreteScheduler proved ideal for our generation task, as it delivers high-quality textured images even with just 10 inference steps. Its discrete approximation to the diffusion process ensures a stable and controlled generation path, preserving image structure and details. Although inference time is similar across most schedulers, the quality of generated images varies significantly. For instance, HeunDiscreteScheduler can produce good results with 50 inference steps, but the computational cost outweighs the quality benefits.
 
 
-## Generating images of different aspect ration
+## 3. Aspect Ratio Analysis
 For this purpose "./depth_images/2_nocrop.png" is used as mentioned in the assignment (all images are generated using depth information and normal surface information with conditioning scale of 1.0 and 0.5 respectively and 10 inference steps LMSDiscreteScheduler)
 
 1. Generating image with original aspect ratio with 32-bit floating point precision:
-Inference Time:  8.313s
+(Inference Time:  8.313s)
 ![Alt text](./generated_images/2_nocrop_32_bit_out.png)
 
 2. Generating image with original aspect ratio with 16-bit floating point precision:
-Inference Time:  3.981s
+(Inference Time:  3.981s)
 ![Alt text](./generated_images/2_nocrop_16_bit_out.png)
 
-2. Generating 1:1 aspect ratio with 16-bit floating point precision:
-Inference Time:   3.156s
+2. Generating 1:1 aspect ratio of size 512x512 with 16-bit floating point precision:
+(Inference Time:   3.156s)
+
+ ```
+python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./depth_images/2_ncrop.png" --generated_img_pth "./generated_images/2_nocrop_1r1_16_bit_out.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 50  --use_f16 --hight 512 --width 512
+```
+
 ![Alt text](./generated_images/2_nocrop_1r1_16_bit_out.png)
+
+The Stable Diffusion pipeline can generate images with various aspect ratios by resizing input images using advanced resampling filters like LANCZOS, NEAREST, and BICUBIC, as mentioned in `main.py`. However, changing the aspect ratio, especially from higher to lower resolutions, can degrade image quality. This occurs because the model prioritizes preserving the overall image structure.
 
 
 ## Inference time
