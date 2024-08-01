@@ -126,10 +126,6 @@ Just to compare the other combination generated image are shown below(all with -
    
 ![Alt text](./generated_images/2_depth_n_canny_10.png)
 
-2. Depth and Normal
-   
-![Alt text](./generated_images/2_depth_n_normal_10.png)
-
 2. Depth and Segment
    
 ![Alt text](./generated_images/2_depth_n_segment_10.png)
