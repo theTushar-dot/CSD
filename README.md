@@ -329,6 +329,7 @@ python main.py --use_cuda --prompt "luxurious bedroom interior" --input_img_pth 
 ```
 
 ![Alt text](./generated_images/4_depth.png)
+
 4. Tackling floating point image data of Image 6.npy
 In Image 6.npy, the given array is 32-bit float point which could not be directly converted to the PIL image. So, I have normalized the array first then convert it to 8 bit intrger format.
 
