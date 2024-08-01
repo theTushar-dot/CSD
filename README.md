@@ -235,6 +235,20 @@ Inputs:
 
 
 Generated Images:
+(i) With original resolution:
+```
+python main.py --use_cuda --prompt "beautiful landscape, mountains in the background" --input_img_pth "./depth_images/1.png" --generated_img_pth "./generated_images/![Alt text](./generated_images/1_depth_n_normal_ori.png).png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16
+```
+
+![Alt text](./generated_images/1_depth_n_normal_ori.png)
+
+
+(ii) With resizing techique:
+```
+python main.py --use_cuda --prompt "beautiful landscape, mountains in the background" --input_img_pth "./depth_images/1.png" --generated_img_pth "./generated_images/1_depth_n_normal_ori.png).png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 --use_resizing
+```
+
+![Alt text](./generated_images/1_depth_n_normal.png)
 
 
 b. Image "3.png":
@@ -245,6 +259,20 @@ Inputs:
 
 
 Generated Images:
+(i) With original resolution:
+```
+python main.py --use_cuda --prompt "Beautiful snowy mountains" --input_img_pth "./depth_images/3.png" --generated_img_pth "./generated_images/3_depth_n_normal_ori.png.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16
+```
+
+![Alt text](./generated_images/3_depth_n_normal_ori.png)
+
+
+(ii) With resizing techique:
+```
+python main.py --use_cuda --prompt "Beautiful snowy mountains" --input_img_pth "./depth_images/3.png" --generated_img_pth "./generated_images/3_depth_n_normal.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 --use_resizing
+```
+
+![Alt text](./generated_images/3_depth_n_normal.png)
 
 
 c. Image "7.npy":
@@ -255,6 +283,20 @@ Inputs:
 
 
 Generated Images:
+(i) With original resolution:
+```
+python main.py --use_cuda --prompt "House in the forest" --input_img_pth "./depth_images/7.npy" --generated_img_pth "./generated_images/7_depth_n_normal_ori.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16
+```
+
+![Alt text](./generated_images/7_depth_n_normal_ori.png)
+
+
+(ii) With resizing techique:
+```
+python main.py --use_cuda --prompt "House in the forest" --input_img_pth "./depth_images/7.npy" --generated_img_pth "./generated_images/7_depth_n_normal.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 --use_resizing
+```
+
+![Alt text](./generated_images/7_depth_n_normal.png)
 
 
 2. Handling images of high resolution:
@@ -265,7 +307,20 @@ Input:
 ![Alt text](./generated_images/4_input.png)
 
 Generated Images:
+(i) With xFormers with token merging:
 
+```
+python main.py --use_cuda --prompt "luxurious bedroom interior" --input_img_pth "./depth_images/4.png" --generated_img_pth "./generated_images/4_depth_n_normal_xFormers.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 --use_xFormers
+```
+
+![Alt text](./generated_images/4_xFormers.png)
+
+(ii) With resizing techique:
+```
+python main.py --use_cuda --prompt "luxurious bedroom interior" --input_img_pth "./depth_images/4.png" --generated_img_pth "./generated_images/4_depth_n_normal.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 --use_resizing
+```
+
+![Alt text](./generated_images/4_depth_n_normal.png)
 4. Tackling floating point image data of Image 6.npy
 In Image 6.npy, the given array is 32-bit float point which could not be directly converted to the PIL image. So, I have normalized the array first then convert it to 8 bit intrger format.
 
@@ -275,6 +330,12 @@ Inputs:
 
 
 Generated Images:
+```
+python main.py --use_cuda --prompt "room with chair" --input_img_pth "./depth_images/6.npy" --generated_img_pth "./generated_images/6_depth_n_normal.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 
+```
+
+![Alt text](./generated_images/6_depth_n_normal.png)
+
 
 
 4. Handling 3D depth image:
@@ -284,9 +345,18 @@ Inputs:
 
 ![Alt text](./generated_images/5_input.png)
 
-Generated Images with fisrt dimnesion's information:
+Generated Images with first dimnesion's information:
+```
+python main.py --use_cuda --prompt "walls with cupboard" --input_img_pth "./depth_images/5.png" --generated_img_pth "./generated_images/5_depth_n_normal.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 
+```
 
+![Alt text](./generated_images/5_depth_n_normal.png)
 
 Generated Images with all three dimnesion's information:
 
+```
+python main.py --use_cuda --prompt "walls with cupboard" --input_img_pth "./depth_images/5.png" --generated_img_pth "./generated_images/5_depth_n_normal_rgb.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 
+```
+
+![Alt text](./generated_images/5_depth_n_normal_rgb.png)
  
