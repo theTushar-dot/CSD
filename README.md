@@ -325,10 +325,10 @@ python main.py --use_cuda --prompt "luxurious bedroom interior" --input_img_pth 
 
 (ii) With resizing techique:
 ```
-python main.py --use_cuda --prompt "luxurious bedroom interior" --input_img_pth "./depth_images/4.png" --generated_img_pth "./generated_images/4_depth_n_normal.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 --use_resizing
+python main.py --use_cuda --prompt "luxurious bedroom interior" --input_img_pth "./depth_images/4.png" --generated_img_pth "./generated_images/4_depth_n_normal.png" --control_with_depth  --num_inference_steps 10  --use_f16 --use_resizing
 ```
 
-![Alt text](./generated_images/4_depth_n_normal.png)
+![Alt text](./generated_images/4_depth.png)
 4. Tackling floating point image data of Image 6.npy
 In Image 6.npy, the given array is 32-bit float point which could not be directly converted to the PIL image. So, I have normalized the array first then convert it to 8 bit intrger format.
 
