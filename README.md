@@ -50,6 +50,14 @@ This repository contains the solutions for Avataar.AI assignment.
 
 ## Readme file Structure
 
+Here, I present a thorough analysis of the findings from the given assignment. The document is divided into five sections: 
+
+1. Detailed walkthrough of the main.py code.
+2. Impact of different inputs to ControlNet and various scheduler algorithms on image generation quality.
+3. Analysis of generating images with different aspect ratios and their quality.
+4. Factors affecting inference time, including hardware and algorithmic complexity.
+5. Showcase of all generated images, detailing unique challenges and solutions.
+
 # Assignment Analysis
 
 This document presents a thorough analysis of the findings from the given assignment. It is divided into the following sections:
