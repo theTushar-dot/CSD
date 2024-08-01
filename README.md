@@ -133,6 +133,11 @@ Just to compare the other combination generated image are shown below(all with -
    
 ![Alt text](./generated_images/2_depth_n_segment_10.png)
 
+3. Depth, Normal and Canny:
+
+![Alt text](./generated_images/2_depth_n_canny_n_normal_10.png)
+
+
 
 The study of impact of Various Scheduler (dinosier) and 16/32-but floating point precision are discussed in last section.
 
