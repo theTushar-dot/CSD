@@ -271,7 +271,7 @@ In Image 6.npy, the given array is 32-bit float point which could not be directl
 
 Inputs:
 
-![Alt text](./generated_images/7_input.png)
+![Alt text](./generated_images/6_input.png)
 
 
 Generated Images:
