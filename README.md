@@ -171,10 +171,6 @@ if __name__ == '__main__':
 This walkthrough should give you a comprehensive understanding of the key sections of the code and how they work together to generate images using Stable Diffusion with ControlNet.
 
 
-
-## 5. Generated Images and Challenges
-A showcase of all generated images, detailing the unique challenges encountered for each image and the solutions implemented to overcome these challenges.
-
 ## 2. Impact on Image Generation Quality
 Examination of how different inputs to ControlNet and various scheduler algorithms affect the quality of the generated images. In this section all studies were carried out using Image "2.png".
 
