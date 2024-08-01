@@ -321,7 +321,7 @@ Generated Images:
 python main.py --use_cuda --prompt "luxurious bedroom interior" --input_img_pth "./depth_images/4.png" --generated_img_pth "./generated_images/4_depth_n_normal_xFormers.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 --use_xFormers
 ```
 
-![Alt text](./generated_images/4_xFormers.png)
+![Alt text](./generated_images/4_xFormer.png)
 
 (ii) With resizing techique:
 ```
