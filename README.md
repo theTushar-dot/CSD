@@ -21,8 +21,8 @@ This repository contains the solutions for Avataar.AI assignment.
 - openCV: 4.10.0
 - scikit-image: 0.24.0
 
-## Usage
-Arguments discription of main.py to generate the image
+
+## Arguments discription of main.py
 
 		--seed: Sets the seed for random number generation to ensure reproducibility of results.
 		--use_cuda: If specified, the program will utilize GPU acceleration for computations.
