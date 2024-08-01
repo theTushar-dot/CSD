@@ -91,6 +91,14 @@ Generated Image
 python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./depth_images/2.png" --generated_img_pth "./generated_images/2_segment.png" --control_with_segment --num_inference_steps 10  --use_f16
 ```
 
+Segment image input for Control Net:
+
+![Alt text](./generated_images/2_segment_original.png)
+
+Generated Image
+
+![Alt text](./generated_images/2_segment.png)
+
 
 ## Best generated image
 
@@ -121,6 +129,10 @@ Just to compare the other combination generated image are shown below(all with -
 2. Depth and Normal
    
 ![Alt text](./generated_images/2_depth_n_normal_10.png)
+
+2. Depth and Segment
+   
+![Alt text](./generated_images/2_depth_n_segment_10.png)
 
 
 The study of impact of Various Scheduler (dinosier) and 16/32-but floating point precision are discussed in last section.
