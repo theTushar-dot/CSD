@@ -298,7 +298,7 @@ d. LMSDiscreteScheduler: It uses linear multistep methods to solve the reverse d
 
 e. HeunDiscreteScheduler: The Heun’s Method Scheduler applies Heun’s method, an improved Euler method, to the discrete diffusion process, offering enhanced accuracy and stability in image generation by correcting for potential errors at each step.
 
-![Alt text](./generated_images/HEUN.png)
+![Alt text](./generated_images/HEUN_new.png)
 
 
 ## Generating images of different aspect ration
