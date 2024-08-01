@@ -65,6 +65,112 @@ This document presents a thorough analysis of the findings from the given assign
 ## 1. Detailed Walkthrough of main.py Code
 An in-depth explanation of the main.py code, including its structure, functions, and overall purpose.
 
+After importing Required Libraries and Setting Up Model Arguments
+
+### Main Function: `generate_an_image`
+This function contains the pipeline for generating images using Stable Diffusion with ControlNet.
+
+#### Floating Point Precision and Device Setup
+We determine the floating point precision and the computation device (CPU/GPU) to be used:
+```python
+if args.use_f16:
+    dtype_to_be_used =  torch.float16
+else:
+    dtype_to_be_used =  torch.float32
+
+if args.use_cuda:
+    torch_device = torch.device("cuda")
+```
+
+#### Loading ControlNet Models
+Depending on the specified control type (depth, canny, normals, segment), appropriate ControlNet models are loaded:
+```python
+all_control_nets = []
+if args.control_with_depth:
+    controlnet = ControlNetModel.from_pretrained("lllyasviel/sd-controlnet-depth", torch_dtype=dtype_to_be_used)
+    controlnet.to(torch_device)
+    all_control_nets.append(controlnet)
+# ... (other controls)
+```
+
+#### Loading Stable Diffusion ControlNet Pipeline
+We load the Stable Diffusion pipeline with the specified ControlNet models:
+```python
+pipeline = StableDiffusionControlNetPipeline.from_pretrained("runwayml/stable-diffusion-v1-5", controlnet=controlnet, torch_dtype=dtype_to_be_used)
+```
+
+#### Scheduler Setup
+The scheduler (denoising algorithm) for the image generation process is chosen based on user input:
+```python
+if args.scheduler == "DDIM":
+    pipeline.scheduler = DDIMScheduler.from_config(pipeline.scheduler.config)
+# ... (other schedulers)
+```
+
+#### Enabling Efficiency Optimizations
+We enable xFormers acceleration and token merging if specified for faster computation:
+```python
+if args.use_xFormers:
+    pipeline.enable_xformers_memory_efficient_attention()
+    tomesd.apply_patch(pipeline, ratio=0.5)
+```
+Additionally, we offload parts of the model to the CPU to optimize memory usage:
+```python
+pipeline.enable_model_cpu_offload()
+```
+
+#### Preparing ControlNet Input Images
+We convert the depth array to the required images for input to ControlNet and resize them if necessary:
+```python
+all_img_for_controlnet = []
+if args.control_with_depth:
+    image_for_controlnet = convert_to_depth(depth_arr)
+    all_img_for_controlnet.append(image_for_controlnet)
+# ... (other controls)
+```
+Check if the image size is appropriate, otherwise resize it to 512x512 for better generation quality:
+```python
+is_img_good_to_go = 1000 > ori_height > 500 and 1000 > ori_width > 500
+if not is_img_good_to_go and args.use_resizing:
+    if isinstance(image_for_controlnet, list):
+        image_for_controlnet = [i_img.resize((512, 512), resample=PIL.Image.Resampling.LANCZOS) for i_img in image_for_controlnet]
+    else:
+        image_for_controlnet = image_for_controlnet.resize((512, 512), resample=PIL.Image.Resampling.LANCZOS)
+```
+
+#### Generating the Image
+We generate the image using the Stable Diffusion and ControlNet pipeline:
+```python
+prompt =  args.prompt 
+generator = torch.manual_seed(args.seed)
+start_time = time.time()
+generated_images = pipeline(prompt, height=args.height, width=args.width, image=image_for_controlnet, num_inference_steps=args.num_inference_steps, generator=generator, controlnet_conditioning_scale=args.controlnet_con_scale, guidance_scale=args.guidance_scale, safety_checker=None)
+end_time = time.time()
+duration = end_time - start_time
+print(f"###Time taken for the task: {duration} seconds")
+```
+
+#### Saving the Generated Image
+Finally, we save the generated image to the specified path:
+```python
+generated_image = generated_images.images[0]
+if not is_img_good_to_go and args.use_resizing:
+    generated_image = generated_image.resize((ori_height, ori_width), resample=PIL.Image.Resampling.LANCZOS)
+generated_image.save(args.generated_img_pth)
+```
+
+### Main Execution
+The main execution block parses arguments, sets the seed, and calls the image generation function:
+```python
+if __name__ == '__main__':
+    args = parse_args()
+    set_seed(args.seed)
+    generated_img = generate_an_image(args)
+```
+
+This walkthrough should give you a comprehensive understanding of the key sections of the code and how they work together to generate images using Stable Diffusion with ControlNet.
+
+
 ## 2. Impact on Image Generation Quality
 Examination of how different inputs to ControlNet and various scheduler algorithms affect the quality of the generated images.
 
