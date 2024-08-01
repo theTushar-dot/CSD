@@ -30,7 +30,7 @@ def preprocess_depth_arr(image_path):
         depth_array =  np.load(image_path)
     elif file_extension == '.png':
         image = Image.open(image_path)
-        depth_array = np.array(image)[:, :, 0]  # Although depth image have 3 channel but all contains same information
+        depth_array = np.array(image)[:, :, 0]
     if depth_array.dtype != 'uint8':
         depth_array = (depth_array - np.min(depth_array)) / (np.max(depth_array) - np.min(depth_array))
         depth_array = (depth_array * 255).astype(np.uint8)
@@ -53,6 +53,7 @@ def depth_to_normal(depth_array):
 
 
 def segment_depth_image(depth_array):
+    depth_array = np.stack((depth_array,) * 3, axis=-1)
     segments = slic(depth_array, n_segments=100, compactness=10)
     segmented_image = label2rgb(segments, image=depth_array, kind='avg')
     segmented_image = (segmented_image * 255).astype(np.uint8)
