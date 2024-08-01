@@ -2,7 +2,7 @@
 This repository contains the solutions for Avataar.AI assignment. 
 
 
-## Repository structure
+## Repository Structure
     
 	.
 	├── depth_images                   # Folder containing the depth images used to control the generation process of stable diffusion   
@@ -46,7 +46,28 @@ This repository contains the solutions for Avataar.AI assignment.
 		--use_f16: If specified, the program will use 16-bit floating point precision for faster computation.
   		--use_resizing : If specified, the ControlNet input images will be resized to 512x512.
     	--use_xFormers : If specified, model will use xFormers acceleration and token merging.
- 	
+
+
+## Readme file Structure
+
+# Assignment Analysis
+
+This document presents a thorough analysis of the findings from the given assignment. It is divided into the following sections:
+
+## 1. Detailed Walkthrough of main.py Code
+An in-depth explanation of the main.py code, including its structure, functions, and overall purpose.
+
+## 2. Impact on Image Generation Quality
+Examination of how different inputs to ControlNet and various scheduler algorithms affect the quality of the generated images.
+
+## 3. Aspect Ratio Analysis
+Analysis of methods to generate images with different aspect ratios and the corresponding impact on image quality.
+
+## 4. Inference Time Study
+Investigation into the factors that affect inference time, including hardware considerations and algorithmic complexity.
+
+## 5. Generated Images and Challenges
+A showcase of all generated images, detailing the unique challenges encountered for each image and the solutions implemented to overcome these challenges.
 
 ## General image generation using controlNet
 
