@@ -282,19 +282,19 @@ Impact of various schudulers on inference time and generation quality (all image
 
 a. PNDMScheduler: It accelerates diffusion model sampling by integrating pseudo numerical techniques, which balance between stability and speed, enhancing image generation quality.
 
-![Alt text](./generated_images/PNDM.png)
+![Alt text](./generated_images/PNDM_new.png)
 
 b. DDIMScheduler: This scheduler offers deterministic and efficient sampling with fewer steps by leveraging implicit noise prediction, allowing for smoother and faster image synthesis in diffusion models.
 
-![Alt text](./generated_images/DDIM.png)
+![Alt text](./generated_images/DDIM_new.png)
 
 c. DDPMScheduler: It follows the traditional probabilistic framework of diffusion models, providing robust and stable sampling but typically requires more inference steps for high-quality outputs.
 
-![Alt text](./generated_images/DDPM.png)
+![Alt text](./generated_images/DDPM_new.png)
 
 d. LMSDiscreteScheduler: It uses linear multistep methods to solve the reverse diffusion process, achieving high-quality image generation with fewer inference steps, making it well-suited for use with ControlNet and Stable Diffusion.
 
-![Alt text](./generated_images/LMSD.png)
+![Alt text](./generated_images/LMSD_new.png)
 
 e. HeunDiscreteScheduler: The Heun’s Method Scheduler applies Heun’s method, an improved Euler method, to the discrete diffusion process, offering enhanced accuracy and stability in image generation by correcting for potential errors at each step.
 
@@ -302,7 +302,7 @@ e. HeunDiscreteScheduler: The Heun’s Method Scheduler applies Heun’s method,
 
 
 ## Generating images of different aspect ration
-For this purpose "./depth_images/2_nocrop.png" is used as mentioned in the assignment (all images are genrated using depth information and normal surface information with conditioning scale of 1.0 and 0.5 respectively and 10 inference steps LMSDiscreteScheduler)
+For this purpose "./depth_images/2_nocrop.png" is used as mentioned in the assignment (all images are generated using depth information and normal surface information with conditioning scale of 1.0 and 0.5 respectively and 10 inference steps LMSDiscreteScheduler)
 
 1. Generating image with original aspect ratio with 32-bit floating point precision:
 Inference Time:  8.313s
