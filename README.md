@@ -1,5 +1,5 @@
-# ControlledStableDiffusion(CSD)
-This repository contains the solutions for Avataar.AI assignment. 
+# ControlledStableDiffusion (CSD)
+This repository contains the solutions for the Avataar.AI recruitment assignment.
 
 
 ## Repository Structure
