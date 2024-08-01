@@ -242,7 +242,7 @@ I found that images generated from depth input are richer in texture compared to
 When a high-threshold edge image is used, the generated output has finer structures, evident in the detailed quality of textures of carpet in second image. Using surface normal information enhances the clarity of boundaries between connected objects. Conversely, segmentation information yields the worst results, as it struggles to differentiate objects from a depth image.
 
 
-## Best generated image
+### Best generated image
 
 I found that the best image quality is achieved when using depth and surface normal information with a conditioning scale of 1.0 and 0.5, respectively, along with the LMSDiscreteScheduler.
 
@@ -263,7 +263,8 @@ python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./
 
 I found that increasing the number of inference steps to 50 allows the model to generate images with more texture. However, given the increased inference time, I would argue that using 10 inference steps is more practical for real-world applications. This approach reduces inference time by over 60% while maintaining comparable image quality.
 
-Just to compare the other combination generated image are shown below(all with --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16).
+For comparison, the images generated using other combinations are shown below (all with --controlnet_con_scale 1.0 0.5, --num_inference_steps 10, and --use_f16).
+
 1. Depth and Canny
    
 ![Alt text](./generated_images/2_depth_n_canny_10.png)
