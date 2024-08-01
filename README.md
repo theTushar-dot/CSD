@@ -172,10 +172,6 @@ This walkthrough should give you a comprehensive understanding of the key sectio
 
 
 
-
-## 4. Inference Time Study
-Investigation into the factors that affect inference time, including hardware considerations and algorithmic complexity.
-
 ## 5. Generated Images and Challenges
 A showcase of all generated images, detailing the unique challenges encountered for each image and the solutions implemented to overcome these challenges.
 
@@ -324,60 +320,46 @@ python main.py --use_cuda --prompt "luxury bedroom interior" --input_img_pth "./
 The Stable Diffusion pipeline can generate images with various aspect ratios by resizing input images using advanced resampling filters like LANCZOS, NEAREST, and BICUBIC, as mentioned in `main.py`. However, changing the aspect ratio, especially from higher to lower resolutions, can degrade image quality. This occurs because the model prioritizes preserving the overall image structure.
 
 
-## Inference time
+## 4. Inference Time Study
 I found that the easiest way to reduce inference time is by using 16-bit floating-point precision instead of 32-bit. Additionally, selecting the right scheduler is crucial for optimizing inference time.
 
-1. Impact of 16-bit vs 32-bit inference time (all images are generated using LMSDiscreteScheduler on depth and normal surface information with conditioning scale of 1.0 and 0.5 respectively, and 10 inference steps):
+1. Impact of using 16-bit vs 32-bitfloating-point precision on Inference time (all images are generated using LMSDiscreteScheduler on depth and normal surface information with conditioning scale of 1.0 and 0.5 respectively, and 10 inference steps):
    
-a. 32 bit
+a. 32-bit floating-point precision
+
 Inference Time: 7.063s
 
 ![Alt text](./generated_images/2_32_bit_out.png)
 
-b. 16 bit
+b. 16-bit floating-point precision
+
 Inference Time: 3.320s
 
 ![Alt text](./generated_images/2_16_bit_out.png)
 
+Use 16-bit floating-point precision make generation inference two time faster as compare to 32-bit floating-point. I found that quality of generated image does not suffer a lot while using 16-bit and 32-bit espeaclly for medium resolution images as shown above. Just image generated with 32-bit floating-point tries to rich more textural information such as the texture of pillow covers in 32-bit is more detailed than 16-bit image.
 
-## Some more important findings:
+2. Using XFromers and token merging for fast and efficient compuation: Token merging is beneficial for optimizing Stable Diffusion pipelines by reducing redundant tokens and Xframer uses sparse attention patterns and gradient checkpointing for efficient computation. However, it performs well only with larger image generation.
 
-1.  Negative prompting: We can also use negative prompts with Stable Diffusion. The model utilizes the embeddings from these negative prompts to discourage certain features described by them. For example, general negative prompts like “low resolution,” “worst quality,” or “low quality” can be used. This approach eliminates the need to specify detailed negative prompts for each input and does not impact inference time.
-Without Negative Prompt:
-
- ![Alt text](./generated_images/2_depth_n_normal_10.png)
- 
-With Negative Prompt:
-
- ![Alt text](./generated_images/2_negative_prompt.png)
- 
-2.  Image seeding: When setting a seed using the torch.Generator function on a CPU versus a GPU, the images generated with a CPU seed have better structure, such as more defined boundaries. This difference is mainly due to the fact that CPUs and GPUs use different implementations of Random Number Generators (RNGs).
-   
-With CPU seed:
-
- ![Alt text](./generated_images/2_depth_n_normal_10.png)
- 
-With CUDA seed:
-
- ![Alt text](./generated_images/2_cuda_seed.png)
- 
-3.  Token merging: Token merging is beneficial for optimizing Stable Diffusion pipelines by reducing redundant tokens. However, it performs well only with larger image generation.
-   
-No token merging(below is the generated image of size 2048x2048):
+No token merging and xFromer(below is the generated image of size 2048x2048):
 Inference Time: 30.540s
 
  ![Alt text](./generated_images/2_noc_no_to.png)
  
-With token merging:
+With token merging and xFromer:
 Inference Time: 25.363s
 
  ![Alt text](./generated_images/2_noc_with_to.png)
 
+The generated images use only 10 inference steps due to hardware limitations. However, It's evdient that XFromers and token merging could significantly improve inference time.
 
-#Other generated Images
 
-1. Taking lower resolution images:
-I found that model is having quite problem in generating images of low resolution such as 1.png, 3.png and 7.npy images and model can comfortably generate high quality images for resolution ranging from 500 to 100. So to tackle this challenge I explictly detect if input image is out of the mentioned range or not. If it is then I resize it to control net input image to 512x512 size and after generating the image,I will rsize it to it's original size. This method founds to bw quite simple and effective.
+
+
+## 5. All Generated Images and their Challenges
+
+### 1. Tackling Lower Resolution Images
+I found that the model struggles with generating low-resolution images, such as those in 1.png, 3.png, and 7.npy. However, it performs well with resolutions between 1000x1000 and 500x500. To address this issue, I implemented a solution that detects if an input image falls outside this range. If so, the image is resized to 512x512 for processing with ControlNet and then resized back to its original dimensions after generation. This method has proven to be both simple and effective.
 
 a. Image "1.png":
 
@@ -387,7 +369,9 @@ Inputs:
 
 
 Generated Images:
+
 (i) With original resolution:
+
 ```
 python main.py --use_cuda --prompt "beautiful landscape, mountains in the background" --input_img_pth "./depth_images/1.png" --generated_img_pth "./generated_images/![Alt text](./generated_images/1_depth_n_normal_ori.png).png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16
 ```
@@ -395,7 +379,8 @@ python main.py --use_cuda --prompt "beautiful landscape, mountains in the backgr
 ![Alt text](./generated_images/1_depth_n_normal_ori.png)
 
 
-(ii) With resizing techique:
+(ii) With resizing technique:
+
 ```
 python main.py --use_cuda --prompt "beautiful landscape, mountains in the background" --input_img_pth "./depth_images/1.png" --generated_img_pth "./generated_images/1_depth_n_normal_ori.png).png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 --use_resizing
 ```
@@ -419,7 +404,7 @@ python main.py --use_cuda --prompt "Beautiful snowy mountains" --input_img_pth "
 ![Alt text](./generated_images/3_depth_n_normal_ori.png)
 
 
-(ii) With resizing techique:
+(ii) With resizing technique:
 ```
 python main.py --use_cuda --prompt "Beautiful snowy mountains" --input_img_pth "./depth_images/3.png" --generated_img_pth "./generated_images/3_depth_n_normal.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 --use_resizing
 ```
@@ -433,9 +418,10 @@ Inputs:
 
 ![Alt text](./generated_images/7_input.png)
 
-
 Generated Images:
+
 (i) With original resolution:
+
 ```
 python main.py --use_cuda --prompt "House in the forest" --input_img_pth "./depth_images/7.npy" --generated_img_pth "./generated_images/7_depth_n_normal_ori.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16
 ```
@@ -443,22 +429,27 @@ python main.py --use_cuda --prompt "House in the forest" --input_img_pth "./dept
 ![Alt text](./generated_images/7_depth_n_normal_ori.png)
 
 
-(ii) With resizing techique:
+(ii) With resizing technique:
+
 ```
 python main.py --use_cuda --prompt "House in the forest" --input_img_pth "./depth_images/7.npy" --generated_img_pth "./generated_images/7_depth_n_normal.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 --use_resizing
 ```
 
 ![Alt text](./generated_images/7_depth_n_normal.png)
 
+From the generated images, it’s evident that directly processing low-resolution images results in degraded output because the model struggles to capture and reconstruct fine details. However, using a resizing technique allows the model to generate higher quality images by providing it with more detailed information to work with.
 
-2. Handling images of high resolution:
-Image "4.png" have a size of 2668x2668. which is quite large and requires more compuation power. So, I tackled this problem in two ways, 1) By resizing image to 512x512 size then generate image and resize back to it's original size as mentioned above. 2) I have used xFormers with token merging.
+
+### 2. Handling images of high resolution:
+
+The image "4.png" is sized at 2668x2668, which requires significant computational power. To address this, I implemented two solutions: 1) utilizing xFormers with token merging to improve efficiency, and 2) applying the resizing technique mentioned earlier to manage the computational demands.
 
 Input:
 
 ![Alt text](./generated_images/4_input.png)
 
 Generated Images:
+
 (i) With xFormers with token merging:
 
 ```
@@ -474,8 +465,11 @@ python main.py --use_cuda --prompt "luxurious bedroom interior" --input_img_pth 
 
 ![Alt text](./generated_images/4_depth.png)
 
-4. Tackling floating point image data of Image 6.npy
-In Image 6.npy, the given array is 32-bit float point which could not be directly converted to the PIL image. So, I have normalized the array first then convert it to 8 bit intrger format.
+Due to hardware limitations, the inference steps are limited to 10, which affects the quality of the first image. However, the resizing technique enables the model to produce higher quality images, as demonstrated by the second image.
+
+
+### 3. Tackling floating point data of Image 6.npy
+n Image 6.npy, the array is in 32-bit floating point format, which cannot be directly converted to a PIL image. To resolve this, I first normalized the array and then converted it to an 8-bit integer format.
 
 Inputs:
 
@@ -483,6 +477,7 @@ Inputs:
 
 
 Generated Images:
+
 ```
 python main.py --use_cuda --prompt "room with chair" --input_img_pth "./depth_images/6.npy" --generated_img_pth "./generated_images/6_depth_n_normal.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 
 ```
@@ -491,25 +486,52 @@ python main.py --use_cuda --prompt "room with chair" --input_img_pth "./depth_im
 
 
 
-4. Handling 3D depth image:
-Image "5.png" is a 3D depth image whereas all other images are one dimenional of conations the same information in all three dimensions.
+### 4. Handling 3D depth image:
+Image "5.png" is a 3D depth image, while all other images are 1D, containing the same information across all three dimensions.
 
 Inputs:
 
 ![Alt text](./generated_images/5_input.png)
 
-Generated Images with first dimnesion's information:
+Generated Images with only first dimension's information:
 ```
 python main.py --use_cuda --prompt "walls with cupboard" --input_img_pth "./depth_images/5.png" --generated_img_pth "./generated_images/5_depth_n_normal.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 
 ```
 
 ![Alt text](./generated_images/5_depth_n_normal.png)
 
-Generated Images with all three dimnesion's information:
+Generated Images with all three dimension's information:
 
 ```
 python main.py --use_cuda --prompt "walls with cupboard" --input_img_pth "./depth_images/5.png" --generated_img_pth "./generated_images/5_depth_n_normal_rgb.png" --control_with_depth control_with_normal  --controlnet_con_scale 1.0 0.5 --num_inference_steps 10  --use_f16 
 ```
 
 ![Alt text](./generated_images/5_depth_n_normal_rgb.png)
+
+When using depth information from all dimensions, the generated image gains a better understanding of relative depth, as demonstrated by the improved quality of the second image.
+
+
+## Miscellaneous Findings:
+
+1.  Negative prompting: We can also use negative prompts with Stable Diffusion. The model utilizes the embeddings from these negative prompts to discourage certain features described by them. For example, general negative prompts like “low resolution,” “worst quality,” or “low quality” can be used. This approach eliminates the need to specify detailed negative prompts for each input and does not impact inference time.
+Without Negative Prompt:
+
+ ![Alt text](./generated_images/2_depth_n_normal_10.png)
+ 
+With Negative Prompt:
+
+ ![Alt text](./generated_images/2_negative_prompt.png)
+ 
+2.  Image seeding: When setting a seed using the torch.Generator function on a CPU versus a GPU, the images generated with a CPU seed have better structure, such as more defined boundaries. This difference is mainly due to the fact that CPUs and GPUs use different implementations of Random Number Generators (RNGs).
+   
+With CPU seed:
+
+ ![Alt text](./generated_images/2_depth_n_normal_10.png)
+ 
+With CUDA seed:
+
+ ![Alt text](./generated_images/2_cuda_seed.png)
+
+
+ # Thanks 
  
