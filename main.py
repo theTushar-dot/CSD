@@ -1,3 +1,6 @@
+
+# Importing required libraries
+
 from diffusers import StableDiffusionControlNetPipeline, ControlNetModel, PNDMScheduler, DDIMScheduler, LMSDiscreteScheduler, DDPMScheduler, HeunDiscreteScheduler, UniPCMultistepScheduler, EulerAncestralDiscreteScheduler
 from PIL import Image
 import PIL
@@ -7,6 +10,7 @@ import argparse
 import torch
 from diffusers.utils import load_image
 import cv2
+import tomesd
 import time
 import tomesd
 from skimage.segmentation import slic
@@ -14,6 +18,7 @@ from skimage.metrics import structural_similarity as ssim
 from skimage.color import label2rgb
 from utils import set_seed, convert_to_canny_image, depth_to_normal, segment_depth_image, preprocess_depth_arr, convert_to_depth
 
+# setting up model arguments to control the generation process
 
 def parse_args():
     parser = argparse.ArgumentParser(description='ControlledStableDiffusion(CSD)')
@@ -43,10 +48,12 @@ def parse_args():
 
     args = parser.parse_args()
     return args
-    
+
+# main function contains the pipeline of Stable Diffusion with ControlNet
 
 def generate_an_image(args):
 
+    #Which floating point precision to use for image generation, 16-bit is faster
     if args.use_f16:
         dtype_to_be_used =  torch.float16
     else:
@@ -56,6 +63,7 @@ def generate_an_image(args):
         torch_device = torch.device("cuda")
 
 
+    #loading specific controlnet model based on which type of input is being used
     all_control_nets = []
     if args.control_with_depth:
         print('loading model for depth...')
@@ -86,9 +94,12 @@ def generate_an_image(args):
     else:
         print('Error')
 
+    
+    # loading the Stable Diffusion ControlNet Pipeline
     pipeline = StableDiffusionControlNetPipeline.from_pretrained("runwayml/stable-diffusion-v1-5", controlnet=controlnet,  torch_dtype=dtype_to_be_used) 
 
-
+    
+    # loading specified scheduler (denoising) algorithm for image generation
     if args.scheduler == "DDIM":
         pipeline.scheduler = DDIMScheduler.from_config(pipeline.scheduler.config)
     elif args.scheduler == "PNDM":
@@ -102,14 +113,19 @@ def generate_an_image(args):
     else:
         print('Please select a valid scheduler')
 
+    # checking if xFormers and token merging is required for faster and efficient computation
     if args.use_xFormers:
         pipeline.enable_xformers_memory_efficient_attention()
+        tomesd.apply_patch(pipeline, ratio=0.5)
 
+    #offloading parts of the model to the CPU to optimize memory usage
     pipeline.enable_model_cpu_offload()
-
+    
+    # creating np.array of depth image
     depth_image_path = args.input_img_pth
     depth_arr = preprocess_depth_arr(depth_image_path)
 
+    # converting depth array to required image for input to ControlNet
     all_img_for_controlnet = []
     if args.control_with_depth:
         print('loading image for depth...')
@@ -146,8 +162,10 @@ def generate_an_image(args):
         ori_width = image_for_controlnet.size[0]
 
 
+    #check wheather image is of lower or higher resolution
     is_img_good_to_go = 1000 > ori_height > 500 and 1000 > ori_width > 500
 
+    #Reszing image of lower or higher resolution to 512x512 for better generation quality
     if not is_img_good_to_go and args.use_resizing:
         print('Resizing Image...')
         if isinstance(image_for_controlnet, list):
@@ -160,6 +178,8 @@ def generate_an_image(args):
     prompt =  args.prompt 
     generator = torch.manual_seed(args.seed)
 
+    
+    # generating image using stable diffusion and control net pipeline
     start_time = time.time()
     generated_images = pipeline(prompt, height = args.height, width = args.width,  image = image_for_controlnet, num_inference_steps=args.num_inference_steps,  generator=generator, controlnet_conditioning_scale = args.controlnet_con_scale, guidance_scale = args.guidance_scale, safety_checker=None)
     end_time = time.time()
@@ -167,13 +187,12 @@ def generate_an_image(args):
 
     print(f"###Time taken for the task: {duration} seconds")   
 
+    # saving generated image 
     generated_image = generated_images.images[0]
     if not is_img_good_to_go and args.use_resizing:
         generated_image = generated_image.resize((ori_height, ori_width), resample=PIL.Image.Resampling.LANCZOS)
     generated_image.save(args.generated_img_pth)
 
-
-    
 
 if __name__ == '__main__':
     args = parse_args()
