@@ -45,7 +45,7 @@ Arguments discription of main.py to generate the image
 		--control_with_segment: If specified, the generation process will be controlled using segmentation information.
 		--use_f16: If specified, the program will use 16-bit floating point precision for faster computation.
   		--use_resizing : If specified, the ControlNet input images will be resized to 512x512.
-    --use_xFormers : If specified, model will use xFormers acceleration and token merging.
+    	--use_xFormers : If specified, model will use xFormers acceleration and token merging.
  	
 
 ## General image generation using controlNet
